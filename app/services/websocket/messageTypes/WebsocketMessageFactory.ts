@@ -10,6 +10,8 @@ import RoomInfoResponseWebsocketMessage from "./types/serverToClient/RoomInfoRes
 import ClientWebsocketMessage from "./ClientWebsocketMessage.js";
 import IWebsocketMessage from "./IWebsocketMessage.js";
 import IClientWebsocketMessage from "./IClientWebsocketMessage.js";
+import InformViewChangeWebsocketMessage from "./types/serverToClient/InformViewChangeWebsocketMessage.js";
+import InformViewChangeClientWebsocketMessage from "./types/clientToServer/InformViewChangeClientWebsocketMessage.js";
 
 type WebsocketMessageConstructor = new () => IWebsocketMessage | IClientWebsocketMessage;
 
@@ -27,10 +29,12 @@ export default class WebsocketMessageFactory
     this.messages.set("room_joined", RoomJoinedWebsocketMessage)
     this.messages.set("room_destroyed", RoomDestroyedWebsocketMessage)
     this.messages.set("room_info_response", RoomInfoResponseWebsocketMessage)
+    this.messages.set("inform_view_change", InformViewChangeWebsocketMessage)
 
     // Client to server
     this.messages.set("room_kick", RoomKickWebsocketMessage)
     this.messages.set("room_info_request", RoomInfoRequestWebsocketMessage)
+    this.messages.set("inform_view_change_client", InformViewChangeClientWebsocketMessage)
   }
 
   public static getMessage(message_type: string, additionnal_data: {}): {} | null

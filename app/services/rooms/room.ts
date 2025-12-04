@@ -111,7 +111,7 @@ export default class Room
 
 }
 
-enum RoomRole
+export enum RoomRole
 {
   OWNER, PARTICIPANTS
 }
