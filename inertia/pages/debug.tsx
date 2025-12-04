@@ -4,9 +4,10 @@ import { Transmit } from '@adonisjs/transmit-client'
 
 export default function Home() {
   const [socketState, setSocketState] = useState("disconnected")
-  const [transmit, setTransmit] = useState<Transmit | null>(null)
+  const [trsmt, setTransmit] = useState<Transmit | null>(null)
   const [uid, setUid] = useState<string>('')
   const [roomId, setRoomId] = useState<string>('')
+  const [serverSubscription, setServerSubscription] = useState<any>(null)
 
   useEffect(() => {
     // Generate a unique ID for this client
@@ -22,8 +23,12 @@ export default function Home() {
 
     // Subscribe to personal channel
     const subscription = transmitClient.subscription(`client/${clientUid}`)
-
     subscription.create()
+
+    // Subscribe to server channel for sending messages
+    const serverSub = transmitClient.subscription('server')
+    serverSub.create()
+    setServerSubscription(serverSub)
 
     subscription.onMessage((message: any) => {
       console.log('Received message:', message)
@@ -46,6 +51,7 @@ export default function Home() {
 
     return () => {
       subscription.delete()
+      serverSub.delete()
     }
   }, [])
 
@@ -114,6 +120,20 @@ export default function Home() {
     }
   }
 
+  function testMessage() {
+    console.log("Sending test message")
+    if (serverSubscription) {
+      // Send message through the server subscription
+      serverSubscription.send({
+        type: "room_info_request",
+        data: {
+          from: uid,
+          whichRoom: roomId
+        }
+      })
+    }
+  }
+
   return (
     <>
       <Head title="Debug - Transmit" />
@@ -139,6 +159,10 @@ export default function Home() {
             }
           }}>
             Join Room
+          </button>
+
+          <button onClick={testMessage}>
+            Test message to server
           </button>
         </div>
       </div>

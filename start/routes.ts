@@ -33,4 +33,8 @@ router.post('/connect', async ({ request, response }) => {
   return response.ok(result)
 })
 
+router.post("/transmit/message", async ({ request, response }) => {
+  transmit.broadcast("server", request.body())
+})
+
 transmit.registerRoutes();

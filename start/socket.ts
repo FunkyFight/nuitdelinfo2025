@@ -27,9 +27,15 @@ transmit.on('unsubscribe', ({ uid, channel }) => {
   }
 })
 
+
+
+
 transmit.on('broadcast', ({ channel, payload }) => {
-  console.log("Broadcast", channel, payload)
+  console.log(payload)
 })
+
+
+
 
 // Handle client connection (called from HTTP route)
 export function handleConnection(uid: string, data: { role: 'host' | 'participant', target_room_id?: string }) {

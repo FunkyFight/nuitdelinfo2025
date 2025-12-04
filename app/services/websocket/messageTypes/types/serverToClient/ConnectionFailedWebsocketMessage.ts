@@ -1,4 +1,4 @@
-import WebsocketMessage from "../WebsocketMessage.js";
+import WebsocketMessage from "../../WebsocketMessage.js";
 
 /**
  * data: {
