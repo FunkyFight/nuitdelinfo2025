@@ -22,6 +22,7 @@ router.post('/connect', async ({ request, response }) => {
   const { uid, role, target_room_id } = request.body()
 
   if (!uid || !role) {
+    console.log(uid, role, target_room_id)
     return response.badRequest({ error: 'Missing uid or role' })
   }
 
