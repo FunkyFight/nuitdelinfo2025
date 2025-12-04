@@ -1,3 +1,4 @@
+import ClientWebsocketMessage from "../../ClientWebsocketMessage.js";
 import WebsocketMessage from "../../WebsocketMessage.js";
 
 /**
@@ -8,7 +9,7 @@ import WebsocketMessage from "../../WebsocketMessage.js";
  *  whichRoom: roodid
  * }
  */
-export default class RoomInfoRequestWebsocketMessage extends WebsocketMessage
+export default class RoomInfoRequestWebsocketMessage extends ClientWebsocketMessage
 {
   getMessageType(): String {
     return "room_info_request"

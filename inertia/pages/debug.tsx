@@ -1,6 +1,9 @@
 import { Head } from '@inertiajs/react'
 import { useEffect, useState } from 'react'
 import { Transmit } from '@adonisjs/transmit-client'
+import ClientWebsocketMessageSender from '~/services/ClientWebsocketMessageSender'
+import RoomInfoRequestWebsocketMessage from '#services/websocket/messageTypes/types/clientToServer/RoomInfoRequestWebsocketMessage'
+import WebsocketMessageFactory from '#services/websocket/messageTypes/WebsocketMessageFactory'
 
 export default function Home() {
   const [socketState, setSocketState] = useState("disconnected")
@@ -122,16 +125,12 @@ export default function Home() {
 
   function testMessage() {
     console.log("Sending test message")
-    if (serverSubscription) {
-      // Send message through the server subscription
-      serverSubscription.send({
-        type: "room_info_request",
-        data: {
-          from: uid,
-          whichRoom: roomId
-        }
-      })
-    }
+    // Send message to server using the client message sender
+    ClientWebsocketMessageSender.sendMessageToServer(
+      uid,
+      roomId,
+      WebsocketMessageFactory.getClientWebsocketMessage("room_info_request")!, {}
+    )
   }
 
   return (

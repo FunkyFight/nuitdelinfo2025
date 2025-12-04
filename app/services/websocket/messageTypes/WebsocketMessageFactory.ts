@@ -7,8 +7,11 @@ import RoomKickWebsocketMessage from "./types/clientToServer/RoomKickWebsocketMe
 import WebsocketMessage from "./WebsocketMessage.js"
 import RoomInfoRequestWebsocketMessage from "./types/clientToServer/RoomInfoRequestWebsocketMessage.js";
 import RoomInfoResponseWebsocketMessage from "./types/serverToClient/RoomInfoResponseWebsocketMessage.js";
+import ClientWebsocketMessage from "./ClientWebsocketMessage.js";
+import IWebsocketMessage from "./IWebsocketMessage.js";
+import IClientWebsocketMessage from "./IClientWebsocketMessage.js";
 
-type WebsocketMessageConstructor = new () => WebsocketMessage;
+type WebsocketMessageConstructor = new () => IWebsocketMessage | IClientWebsocketMessage;
 
 export default class WebsocketMessageFactory
 {
@@ -36,7 +39,7 @@ export default class WebsocketMessageFactory
 
     if(message == null) return null;
 
-    return new message().build(additionnal_data);
+    return (new message() as IWebsocketMessage).build(additionnal_data);
   }
 
   public static getWebsocketMessage(message_type: string): WebsocketMessage | null
@@ -45,6 +48,15 @@ export default class WebsocketMessageFactory
 
     if(message == null) return null;
 
-    return new message();
+    return (new message() as IWebsocketMessage);
+  }
+
+  public static getClientWebsocketMessage(message_type: string): ClientWebsocketMessage | null
+  {
+    let message = this.messages.get(message_type);
+
+    if(message == null) return null;
+
+    return (new message() as IClientWebsocketMessage);
   }
 }

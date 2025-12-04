@@ -3,7 +3,7 @@ import WebsocketMessage from "./messageTypes/WebsocketMessage.js";
 
 export default class ClientWebsocketMessageSender
 {
-  static sendMessageToServer(client: string, room: string, message: ClientWebsocketMessage, additionnal_data: {})
+  public static sendMessageToServer(client: string, room: string, message: ClientWebsocketMessage, additionnal_data: {})
   {
     fetch("/transmit/message", {
       method: "POST",
@@ -14,3 +14,5 @@ export default class ClientWebsocketMessageSender
     });
   }
 }
+
+

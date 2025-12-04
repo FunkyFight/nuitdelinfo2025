@@ -1,4 +1,4 @@
-import WebsocketMessage from "../../WebsocketMessage.js";
+import ClientWebsocketMessage from "../../ClientWebsocketMessage.js";
 
 /**
  * Éjecte l'utilisateur
@@ -9,7 +9,7 @@ import WebsocketMessage from "../../WebsocketMessage.js";
  *  target: targetid
  * }
  */
-export default class RoomKickWebsocketMessage extends WebsocketMessage
+export default class RoomKickWebsocketMessage extends ClientWebsocketMessage
 {
   getMessageType(): String {
     return "room_kick"
