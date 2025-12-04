@@ -9,7 +9,7 @@ export default function RoomFooter({ onNext }: RoomFooterProps) {
     <footer style={styles.footer}>
       <div style={styles.container}>
         <button onClick={onNext} style={styles.button}>
-          Next
+          Suite
         </button>
       </div>
     </footer>
@@ -28,7 +28,6 @@ const styles = {
     boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)',
   },
   container: {
-    maxWidth: '1280px',
     margin: '0 auto',
     display: 'flex',
     justifyContent: 'flex-end',

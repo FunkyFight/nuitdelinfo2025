@@ -10,6 +10,7 @@ export default function RoomLanding({ roomId }: RoomLandingProps) {
       <style>{spinAnimation}</style>
       <div style={styles.container}>
         <div style={styles.frame}>
+        <div style={styles.bigtitle}>Caroot</div>
           {!roomId ? (
             <div style={styles.loadingContainer}>
               <div style={styles.spinner}></div>
@@ -17,7 +18,7 @@ export default function RoomLanding({ roomId }: RoomLandingProps) {
             </div>
           ) : (
             <div style={styles.codeContainer}>
-              <h2 style={styles.title}>Type this code to enter the room!</h2>
+              <h2 style={styles.title}>Écrivez ce code pour rejoindre la partie !</h2>
               <div style={styles.code}>{roomId}</div>
             </div>
           )}
@@ -43,13 +44,14 @@ const styles = {
     backgroundColor: '#f3f4f6',
   },
   frame: {
-    width: '500px',
+    width: '550px',
     minHeight: '300px',
     backgroundColor: '#ffffff',
     borderRadius: '1rem',
     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
     padding: '3rem 2rem',
     display: 'flex',
+    flexDirection: 'column' as const,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -81,6 +83,12 @@ const styles = {
   },
   title: {
     fontSize: '1.5rem',
+    fontWeight: 600,
+    color: '#1f2937',
+    margin: 0,
+  },
+  bigtitle: {
+    fontSize: '2.5rem',
     fontWeight: 600,
     color: '#1f2937',
     margin: 0,
