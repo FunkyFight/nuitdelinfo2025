@@ -16,7 +16,14 @@ export class WebsocketService
   @OnConnect()
   public async OnWebsocketConnect(socket: Socket, data: any)
   {
-      if(data == null) socket.emit("on_response", {"response_type": "connection_fail"});
+      if(data == null)
+      {
+        socket.emit("on_response", {"message_type": "connection_fail"});
+        socket.disconnect(true);
+        return;
+      }
+
+      
 
   }
 }
