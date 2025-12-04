@@ -1,29 +1,71 @@
 import WebsocketMessage from '#services/websocket/messageTypes/WebsocketMessage';
-import type { Socket } from 'socket.io'
+import WebsocketMessageFactory from '#services/websocket/messageTypes/WebsocketMessageFactory';
+import transmit from '@adonisjs/transmit/services/main'
 
 export default class Room
 {
 
-  room_owner: Socket;
-  participants: Array<Socket> = []
+  id: string;
+  room_owner: string; // Changed from Socket to string (uid)
+  participants: Array<string> = [] // Changed from Socket to string (uid)
+  variables: Map<string, any> = new Map()
 
-  constructor(room_owner: Socket)
+  constructor(id: string, room_owner: string)
   {
+    this.id = id;
     this.room_owner = room_owner;
   }
 
-  addParticipant(user: Socket)
+  addParticipant(uid: string)
   {
-    this.participants.push(user);
+    this.participants.push(uid);
   }
 
-  disconnectParticipant(user: Socket)
+  removeParticipant(uid: string)
   {
-    user.emit("on_message", )
-    user.disconnect();
-    let socketIndex = this.participants.findIndex(v => v == user)
+    let idx = this.participants.findIndex(v => v == uid);
+    if (idx > -1) {
+      this.participants.splice(idx, 1);
+    }
+  }
 
-    delete this.participants[socketIndex];
+  setVariable(name: string, value: any)
+  {
+    this.variables.set(name, value)
+  }
+
+  clearVariable(name: string)
+  {
+    this.variables.delete(name)
+  }
+
+  disconnectParticipant(uid: string)
+  {
+    transmit.broadcast(`client/${uid}`, {
+      type: "on_message",
+      data: WebsocketMessageFactory.getMessage("room_kick", {})
+    })
+
+    let socketIndex = this.participants.findIndex(v => v == uid)
+    if (socketIndex > -1) {
+      this.participants.splice(socketIndex, 1);
+    }
+  }
+
+  disconnectAll()
+  {
+    for(let uid of this.participants)
+    {
+      transmit.broadcast(`client/${uid}`, {
+        type: "on_message",
+        data: WebsocketMessageFactory.getMessage("room_kick", {})
+      })
+    }
+
+    transmit.broadcast(`client/${this.room_owner}`, {
+      type: "on_message",
+      data: WebsocketMessageFactory.getMessage("room_kick", {})
+    })
   }
 
   emitTo(destination: RoomRole, message: WebsocketMessage, additionnal_data: {})
@@ -33,15 +75,37 @@ export default class Room
     switch(destination)
     {
       case RoomRole.OWNER:
-        this.room_owner.emit("on_message", message.build(additionnal_data))
+        transmit.broadcast(`client/${this.room_owner}`, {
+          type: "on_message",
+          data: message.build(additionnal_data)
+        })
         break;
 
       case RoomRole.PARTICIPANTS:
-        for(const participant of this.participants)
+        for(const uid of this.participants)
         {
-          participant.emit("on_message", message.build(additionnal_data))
+          transmit.broadcast(`client/${uid}`, {
+            type: "on_message",
+            data: message.build(additionnal_data)
+          })
         }
         break;
+    }
+  }
+
+  broadcast(message: WebsocketMessage, additionnal_data: {})
+  {
+    transmit.broadcast(`client/${this.room_owner}`, {
+      type: "on_message",
+      data: message.build(additionnal_data)
+    })
+
+    for(const uid of this.participants)
+    {
+      transmit.broadcast(`client/${uid}`, {
+        type: "on_message",
+        data: message.build(additionnal_data)
+      })
     }
   }
 
