@@ -1,12 +1,11 @@
 import Room from "./room.js";
-import type { Socket } from 'socket.io'
 
 export class RoomService
 {
 
   rooms: Map<string, Room> = new Map();
 
-  createNewRoom(owner: Socket): Room
+  createNewRoom(owner: string): Room
   {
     let id: string = this.makeid(8);
 
