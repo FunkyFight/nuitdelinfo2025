@@ -12,6 +12,8 @@ import transmit from '@adonisjs/transmit/services/main'
 import { handleConnection } from '#start/socket'
 
 router.on('/').renderInertia('home')
+router.on('/join').renderInertia('join')
+
 router.on('/debug').renderInertia('debug')
 
 // Transmit connection endpoint
