@@ -10,4 +10,5 @@
 import router from '@adonisjs/core/services/router'
 router.on('/').renderInertia('home')
 router.on('/join').renderInertia('join')
+router.on('/room').renderInertia('room')
 
