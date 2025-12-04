@@ -1,6 +1,7 @@
 import transmit from '@adonisjs/transmit/services/main'
 import { RoomService } from "#services/rooms/room_service"
 import WebsocketMessageFactory from '#services/websocket/messageTypes/WebsocketMessageFactory'
+import { RoomRole } from '#services/rooms/room'
 
 // Initialize room service
 const roomService = new RoomService()
@@ -31,7 +32,21 @@ transmit.on('unsubscribe', ({ uid, channel }) => {
 
 
 transmit.on('broadcast', ({ channel, payload }) => {
-  console.log(payload)
+  if(payload == null) return;
+
+  let data = JSON.parse(payload!.toString());
+
+  switch(data.message_type)
+  {
+    case "inform_view_change_client":
+      let room = roomService.getRoom(data.room);
+      if(room == null) return;
+
+      room.emitTo(RoomRole.PARTICIPANTS, WebsocketMessageFactory.getWebsocketMessage("inform_view_change")!, {
+        changeId: data.changeId
+      })
+      break;
+  }
 })
 
 
