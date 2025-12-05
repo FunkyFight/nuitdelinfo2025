@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react'
+import { Head, router } from '@inertiajs/react'
 
 const input_styles: React.CSSProperties = {
   borderWidth: 2,
@@ -24,13 +24,8 @@ export default function Home() {
           fontSize: "2.5rem",
           marginBottom: "20px"
         }}>Bienvenue sur Caroot !</h1>
-        <Link href={"/join"}>
-          <button type="submit" style={input_styles}>Rejoindre la salle</button>
-        </Link>
-        <Link href={"/room"}>
-          <button type="submit" style={input_styles}>Créer une nouvelle salle de jeu</button>
-        </Link>
-        
+        <button type="submit" onClick={() => router.visit("/join")} style={input_styles}>Rejoindre la salle</button>
+        <button type="submit" onClick={() => router.visit("/room")} style={input_styles}>Créer une nouvelle salle de jeu</button>
       </div>
     </>
   )
