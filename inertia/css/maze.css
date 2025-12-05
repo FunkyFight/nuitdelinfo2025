@@ -1,0 +1,184 @@
+/* Main wrapper container */
+.maze-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Canvas styling */
+.maze-canvas {
+  display: block;
+  border: 2px solid #333;
+  border-radius: 4px;
+}
+
+/* Code display section */
+.maze-code-section {
+  text-align: center;
+}
+
+.maze-code-display {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+}
+
+.maze-code-display.complete {
+  color: #00cc00;
+}
+
+.maze-code-hint {
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+}
+
+/* Main content container: arranges canvas + controls */
+.maze-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Arrow controls section */
+.maze-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.maze-instructions {
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Grid for arrow buttons */
+.maze-button-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  grid-template-rows: repeat(3, 60px);
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Arrow button styling */
+.maze-arrow-button {
+  width: 60px;
+  height: 60px;
+  /* Larger glyphs so arrows occupy most of the button area */
+  font-size: 34px;
+  border: 2px solid #3366ff;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #3366ff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: all 0.1s ease;
+  font-weight: bold;
+  padding: 0;
+  line-height: 1;
+}
+
+.maze-arrow-button:hover {
+  background-color: #3366ff;
+  color: #fff;
+  transform: scale(0.95);
+}
+
+.maze-arrow-button:active {
+  transform: scale(0.9);
+}
+
+/* ========== RESPONSIVE LAYOUTS ========== */
+
+/* MOBILE: arrows below code (default, column layout) */
+@media (max-width: 768px) {
+  .maze-wrapper {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .maze-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .maze-button-grid {
+    grid-template-columns: repeat(3, 50px);
+    grid-template-rows: repeat(3, 50px);
+    gap: 8px;
+  }
+
+  .maze-arrow-button {
+    width: 50px;
+    height: 50px;
+    /* scale glyph on small screens */
+    font-size: 28px;
+  }
+}
+
+/* DESKTOP: arrows beside code (side-by-side) */
+@media (min-width: 769px) {
+  .maze-wrapper {
+    max-width: 900px;
+  }
+
+  .maze-content {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+  }
+
+  .maze-controls {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .maze-button-grid {
+    grid-template-columns: repeat(3, 60px);
+    grid-template-rows: repeat(3, 60px);
+    gap: 10px;
+  }
+
+  .maze-code-section {
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  /* Desktop: scale glyphs slightly larger */
+  .maze-arrow-button {
+    font-size: 36px;
+  }
+}
+
+/* LARGE DESKTOP: scale up slightly */
+@media (min-width: 1200px) {
+  .maze-button-grid {
+    grid-template-columns: repeat(3, 70px);
+    grid-template-rows: repeat(3, 70px);
+    gap: 12px;
+  }
+
+  .maze-arrow-button {
+    width: 70px;
+    height: 70px;
+    /* large desktop: glyphs scaled up */
+    font-size: 44px;
+  }
+}
