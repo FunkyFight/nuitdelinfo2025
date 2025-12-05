@@ -152,7 +152,7 @@ export default function Room() {
             question.id == "question10" && (<QuestionBasePresentation question={titleQuestions[9]} answers={possibleAnswers[9] as [string, string, string, string]} answer={goodAnswers[9] as 0 | 1 | 2 | 3} showAnswer={question.showAnswer}></QuestionBasePresentation>)
         }
         {
-            question.id == "stl1" && (<STLPresentation title="3D Model Example" stlFile="https://litter.catbox.moe/folv114g6x2wzpwo.stl" ></STLPresentation>)
+            question.id == "stl1" && (<STLPresentation title="Vous avez atteint la fin du quiz ! Voici un ordinateur portable miniature en 3D ! Vous pouvez glisser-déposer d'autres fichiers STL si vous le souhaitez." stlFile="https://files.catbox.moe/95zkyh.stl" ></STLPresentation>)
         }
         { roomId && (
         <RoomFooter onNext={nextQuestion} onBack={previousQuestion} showNext={questionIndex < questionsFile.length - 1} showBack={questionIndex > 0} />
