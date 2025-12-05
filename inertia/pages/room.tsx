@@ -24,7 +24,7 @@ const questions = [
     { id: "base", showAnswer: false },
     { id: "question1", showAnswer: false },
     { id: "question1", showAnswer: true },
-    { id: "stl1", showAnswer: false },
+    { id: "stl1", showAnswer: false }
 ]
 
 interface Question {
