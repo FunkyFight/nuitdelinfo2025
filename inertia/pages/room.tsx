@@ -1,6 +1,7 @@
 import { Transmit } from "@adonisjs/transmit-client";
 import { Head } from "@inertiajs/react"
 import { useEffect, useState } from "react";
+import QuestionBasePresentation from "~/components/QuestionBasePresentation";
 import RoomFooter from "~/components/roomfooter"
 import RoomLanding from "~/components/roomlanding"
 
@@ -99,7 +100,7 @@ export default function Room() {
     
     return <>
         <Head title="Room" />
-        <RoomLanding roomId={roomId} />
+        <QuestionBasePresentation question="Sample question?" image="https://upload.wikimedia.org/wikipedia/commons/2/2a/Croissant-Petr_Kratochvil.jpg" answers={["Answer 1", "Answer 2", "Answer 3", "Answer 4"]} answer={0} showAnswer={false}></QuestionBasePresentation>
         <RoomFooter onNext={() => {}} />
     
     
