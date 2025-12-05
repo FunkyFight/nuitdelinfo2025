@@ -34,7 +34,8 @@ transmit.on('unsubscribe', ({ uid, channel }) => {
 transmit.on('broadcast', ({ channel, payload }) => {
   if(payload == null) return;
 
-  let data = JSON.parse(payload!.toString());
+  console.log("broadcast", channel);
+  const data = payload as Record<string, any>;
 
   switch(data.message_type)
   {
