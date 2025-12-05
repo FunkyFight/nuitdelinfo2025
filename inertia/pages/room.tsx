@@ -47,7 +47,7 @@ export default function Room() {
             baseUrl: window.location.origin,
         })
         setTransmit(transmitClient)
-        
+
 
     // Subscribe to personal channel
         const subscription = transmitClient.subscription(`client/${clientUid}`)
@@ -55,7 +55,7 @@ export default function Room() {
         subscription.create()
         subscription.onMessage((message: any) => {
             console.log('Received message:', message)
-            
+
             if (message.type === 'on_message') {
                 const data = message.data
                 switch (data.message_type) {
@@ -145,5 +145,6 @@ export default function Room() {
     
     
     </>
+    
 }
 
