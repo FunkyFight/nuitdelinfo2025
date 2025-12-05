@@ -2,15 +2,26 @@ import React from 'react'
 
 interface RoomFooterProps {
   onNext?: () => void
+  onBack?: () => void
+  showNext?: boolean
+  showBack?: boolean
 }
 
-export default function RoomFooter({ onNext }: RoomFooterProps) {
+export default function RoomFooter({ onNext, onBack, showNext, showBack }: RoomFooterProps) {
   return (
     <footer style={styles.footer}>
       <div style={styles.container}>
-        <button onClick={onNext} style={styles.button}>
-          Suite
-        </button>
+        {onBack && showBack && (
+          <button onClick={onBack} style={styles.button}>
+            Retour
+          </button>
+        )}
+        <div style={{ flex: 1 }}></div>
+        {onNext && showNext && (
+          <button onClick={onNext} style={styles.button}>
+            Suite
+          </button>
+        )}
       </div>
     </footer>
   )

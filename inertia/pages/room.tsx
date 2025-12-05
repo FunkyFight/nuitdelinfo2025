@@ -14,7 +14,16 @@ const input_styles: React.CSSProperties = {
   maxWidth: "350px",
 }
 
+const questions = [
+    { id: "base", showAnswer: false },
+    { id: "question1", showAnswer: false },
+    { id: "question1", showAnswer: true },
+]
 
+interface Question {
+    id: string;
+    showAnswer: boolean;
+}
 
 export default function Room() {
 
@@ -22,6 +31,11 @@ export default function Room() {
     const [transmit, setTransmit] = useState<Transmit | null>(null)
     const [uid, setUid] = useState<string>('')
     const [roomId, setRoomId] = useState<string|null>(null)
+    const [question, setQuestion] = useState<Question>(questions[0])
+    const [questionIndex, setQuestionIndex] = useState<number>(0)
+    const [showAnswer, setShowAnswer] = useState<boolean>(false)
+
+    
 
     useEffect(() => {
         // Generate a unique ID for this client
@@ -97,12 +111,33 @@ export default function Room() {
         }
     }
 
-    
+    async function nextQuestion() {
+        const nextIndex = questionIndex + 1
+        if (nextIndex < questions.length) {
+            setQuestionIndex(nextIndex)
+            setQuestion(questions[nextIndex])
+        }
+    }
+    async function previousQuestion() {
+        const prevIndex = questionIndex - 1
+        if (prevIndex >= 0) {
+            setQuestionIndex(prevIndex)
+            setQuestion(questions[prevIndex])
+        }
+    }
+
     return <>
         <Head title="Room" />
-        <QuestionBasePresentation question="Sample question?" image="https://upload.wikimedia.org/wikipedia/commons/2/2a/Croissant-Petr_Kratochvil.jpg" answers={["Answer 1", "Answer 2", "Answer 3", "Answer 4"]} answer={0} showAnswer={false}></QuestionBasePresentation>
-        <RoomFooter onNext={() => {}} />
-    
+        {
+            question.id == "base" && (<RoomLanding roomId={roomId} />)
+        }
+        {
+            question.id == "question1" && (<QuestionBasePresentation question="Sample question?" image="https://upload.wikimedia.org/wikipedia/commons/2/2a/Croissant-Petr_Kratochvil.jpg" answers={["Answer 1", "Answer 2", "Answer 3", "Answer 4"]} answer={0} showAnswer={question.showAnswer}></QuestionBasePresentation>)
+        }
+        { roomId && (
+        <RoomFooter onNext={nextQuestion} onBack={previousQuestion} showNext={questionIndex < questions.length - 1} showBack={questionIndex > 0} />
+    )
+        }
     
     
     

@@ -75,7 +75,8 @@ const styles = {
     borderRadius: '0.75rem',
     border: '2px solid #e5e7eb',
     minHeight: '0',
-    maxHeight: 'calc(100vh - 430px)'
+    maxHeight: 'calc(100vh - 430px)',
+    overflow: 'hidden'
   },
   image: {
     width: '100%',
