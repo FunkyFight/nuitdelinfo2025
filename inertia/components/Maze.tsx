@@ -464,6 +464,24 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
           </div>
         </div>
       </div>
+      <button style={{
+          borderWidth: 2,
+          borderRadius: "25px",
+          margin: "5px",
+          padding: "10px 25px",
+          width: "100%",
+          maxWidth: "350px",
+        }}
+        onClick={() => {
+          let room_id: string | null = ""
+
+          do{
+            room_id = window.prompt("Entrez l'ID de la salle :")
+          }while(!(new RegExp(String.raw`^\d{${codeLength}}$`, "g")).test(room_id || '') && room_id !== null)
+
+          if(room_id) router.visit(redirectUrl, {method: 'get', data: { room_id: room_id }})
+        }}
+        >Je ne veux plus souffrir</button>
     </div>
   );
 };
