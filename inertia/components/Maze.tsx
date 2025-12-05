@@ -41,8 +41,8 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
   
   const [playerPos, setPlayerPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [password, setPassword] = useState<string>('');
-  const [actualCellSize, setActualCellSize] = useState<number>(cellSize);
   
+  // État pour le mapping des flèches (position du bouton -> direction réelle)
   const [arrowMapping, setArrowMapping] = useState<ArrowMapping>({
     top: 'up',
     bottom: 'down',
@@ -50,6 +50,7 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
     right: 'right'
   });
 
+  // Fonction pour mélanger aléatoirement les flèches
   const shuffleArrows = () => {
     const directions: Direction[] = ['up', 'down', 'left', 'right'];
     const shuffled = [...directions].sort(() => Math.random() - 0.5);
@@ -62,6 +63,7 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
     });
   };
 
+  // Fonction de déplacement réutilisable
   const movePlayer = (direction: Direction, fromVirtualKeyboard: boolean = false) => {
     const connections = connectionsRef.current;
     if (!connections || connections.length === 0) return;
@@ -70,6 +72,7 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
     let newX = x;
     let newY = y;
 
+    // Directions : [0]=haut, [1]=droite, [2]=bas, [3]=gauche
     switch (direction) {
       case 'up':
         if (connections[y]?.[x]?.[0]) newY = y - 1;
@@ -88,12 +91,14 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
     if (newX !== x || newY !== y) {
       setPlayerPos({ x: newX, y: newY });
       
+      // Mélanger les flèches si le déplacement vient du clavier virtuel
       if (fromVirtualKeyboard) {
         shuffleArrows();
       }
     }
   };
 
+  // Validation automatique du code
   useEffect(() => {
     if (password.length === codeLength) {
       console.log(`✅ Code complet saisi : ${password}`);
@@ -103,7 +108,7 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
       }
       
       setTimeout(() => {
-        router.visit(redirectUrl, {method: 'get', data: { code: password }});
+        router.visit(redirectUrl, {method: 'get', data: { room_id: password }});
       }, 500);
     }
   }, [password, codeLength, redirectUrl, onCodeComplete]);
@@ -115,29 +120,12 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
-    // --- CALCUL DE LA TAILLE ADAPTATIVE ---
-    // Réserver de l'espace pour les contrôles (environ 400px pour info + clavier)
-    const reservedHeight = 400;
-    const reservedWidth = 40; // Marges horizontales
-    
-    const availableWidth = window.innerWidth - reservedWidth;
-    const availableHeight = window.innerHeight - reservedHeight;
-    
-    // Calculer la taille de cellule qui permet de faire tenir la grille
-    const maxCellWidth = Math.floor(availableWidth / gridCols);
-    const maxCellHeight = Math.floor(availableHeight / gridRows);
-    
-    // Prendre la plus petite des deux pour garder des cellules carrées
-    const adaptiveCellSize = Math.min(maxCellWidth, maxCellHeight, cellSize);
-    
-    setActualCellSize(adaptiveCellSize);
-    
-    const pathWidth = adaptiveCellSize - wallThickness;
+    const pathWidth = cellSize - wallThickness;
     const cols = gridCols;
     const rows = gridRows;
 
-    canvas.width = cols * adaptiveCellSize;
-    canvas.height = rows * adaptiveCellSize;
+    canvas.width = cols * cellSize;
+    canvas.height = rows * cellSize;
 
     const generateMaze = () => {
       const connections: boolean[][][] = Array.from({ length: rows }, () =>
@@ -157,8 +145,8 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
       const renderCell = (x: number, y: number, color: string = pathColor) => {
         ctx.fillStyle = color;
         ctx.fillRect(
-          x * adaptiveCellSize + wallThickness / 2,
-          y * adaptiveCellSize + wallThickness / 2,
+          x * cellSize + wallThickness / 2,
+          y * cellSize + wallThickness / 2,
           pathWidth,
           pathWidth
         );
@@ -166,8 +154,8 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
 
       const connectHorizontal = (x: number, y: number) => {
         ctx.fillRect(
-          (x * adaptiveCellSize) + adaptiveCellSize - wallThickness,
-          (y * adaptiveCellSize) + wallThickness / 2,
+          (x * cellSize) + cellSize - wallThickness,
+          (y * cellSize) + wallThickness / 2,
           wallThickness * 2,
           pathWidth
         );
@@ -177,8 +165,8 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
 
       const connectVertical = (x: number, y: number) => {
         ctx.fillRect(
-          (x * adaptiveCellSize) + wallThickness / 2,
-          (y * adaptiveCellSize) + adaptiveCellSize - wallThickness,
+          (x * cellSize) + wallThickness / 2,
+          (y * cellSize) + cellSize - wallThickness,
           pathWidth,
           wallThickness * 2
         );
@@ -268,21 +256,21 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
       selected.forEach(([x, y], index) => {
         ctx.fillStyle = deadEndColor;
         ctx.fillRect(
-          x * adaptiveCellSize + wallThickness / 2,
-          y * adaptiveCellSize + wallThickness / 2,
+          x * cellSize + wallThickness / 2,
+          y * cellSize + wallThickness / 2,
           pathWidth,
           pathWidth
         );
 
         const number = numbersToAssign[index];
         ctx.fillStyle = textColor;
-        ctx.font = `bold ${adaptiveCellSize * 0.5}px Arial`;
+        ctx.font = `bold ${cellSize * 0.5}px Arial`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(
           number.toString(),
-          x * adaptiveCellSize + adaptiveCellSize / 2,
-          y * adaptiveCellSize + adaptiveCellSize / 2
+          x * cellSize + cellSize / 2,
+          y * cellSize + cellSize / 2
         );
       });
 
@@ -340,7 +328,7 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
-    const pathWidth = actualCellSize - wallThickness;
+    const pathWidth = cellSize - wallThickness;
 
     const redrawCell = (x: number, y: number) => {
       const deadEndIndex = deadEndsRef.current.findIndex(([dx, dy]) => dx === x && dy === y);
@@ -350,26 +338,26 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
         
         ctx.fillStyle = deadEndColor;
         ctx.fillRect(
-          x * actualCellSize + wallThickness / 2,
-          y * actualCellSize + wallThickness / 2,
+          x * cellSize + wallThickness / 2,
+          y * cellSize + wallThickness / 2,
           pathWidth,
           pathWidth
         );
         
         ctx.fillStyle = textColor;
-        ctx.font = `bold ${actualCellSize * 0.5}px Arial`;
+        ctx.font = `bold ${cellSize * 0.5}px Arial`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(
           numbersToAssign[deadEndIndex].toString(),
-          x * actualCellSize + actualCellSize / 2,
-          y * actualCellSize + actualCellSize / 2
+          x * cellSize + cellSize / 2,
+          y * cellSize + cellSize / 2
         );
       } else {
         ctx.fillStyle = pathColor;
         ctx.fillRect(
-          x * actualCellSize + wallThickness / 2,
-          y * actualCellSize + wallThickness / 2,
+          x * cellSize + wallThickness / 2,
+          y * cellSize + wallThickness / 2,
           pathWidth,
           pathWidth
         );
@@ -381,21 +369,58 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
 
     ctx.fillStyle = playerColor;
     const playerSize = pathWidth * 0.8;
-    const offset = (actualCellSize - playerSize) / 2;
+    const offset = (cellSize - playerSize) / 2;
     
     ctx.fillRect(
-      playerPos.x * actualCellSize + offset,
-      playerPos.y * actualCellSize + offset,
+      playerPos.x * cellSize + offset,
+      playerPos.y * cellSize + offset,
       playerSize,
       playerSize
     );
 
     prevPlayerPosRef.current = { x: playerPos.x, y: playerPos.y };
 
-  }, [playerPos, actualCellSize, wallThickness, pathColor, deadEndColor, textColor, playerColor]);
+  }, [playerPos, cellSize, wallThickness, pathColor, deadEndColor, textColor, playerColor]);
+
+  // Gestion du clavier physique (ne change pas les flèches)
+  /*useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'ArrowUp':
+        case 'z':
+        case 'w':
+          movePlayer('up', false);
+          e.preventDefault();
+          break;
+        case 'ArrowRight':
+        case 'd':
+          movePlayer('right', false);
+          e.preventDefault();
+          break;
+        case 'ArrowDown':
+        case 's':
+          movePlayer('down', false);
+          e.preventDefault();
+          break;
+        case 'ArrowLeft':
+        case 'q':
+        case 'a':
+          movePlayer('left', false);
+          e.preventDefault();
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [playerPos]);*/
 
   const remainingDigits = codeLength - password.length;
 
+  // Mapping des directions vers les symboles de flèches
   const arrowSymbols: Record<Direction, string> = {
     up: '↑',
     down: '↓',
@@ -403,6 +428,7 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
     right: '→'
   };
 
+  // Styles pour les boutons
   const buttonStyle: React.CSSProperties = {
     width: '60px',
     height: '60px',
@@ -426,26 +452,15 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
   };
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
-      alignItems: 'center',
-      padding: '20px',
-      maxWidth: '100vw',
-      overflow: 'hidden'
-    }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <canvas 
         ref={canvasRef} 
-        style={{ 
-          display: 'block',
-          maxWidth: '100%',
-          height: 'auto'
-        }} 
+        style={{ display: 'block' }} 
         tabIndex={0}
       />
       
       {/* Informations du code */}
-      <div style={{ marginTop: '20px', fontSize: '14px', textAlign: 'center', width: '100%' }}>
+      <div style={{ marginTop: '20px', fontSize: '14px', textAlign: 'center' }}>
         <div style={{ 
           fontSize: '24px', 
           fontWeight: 'bold', 
@@ -463,9 +478,9 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
       </div>
 
       {/* Clavier virtuel avec flèches dynamiques */}
-      <div style={{ color: '#666', marginBottom: '8px', marginTop: '16px', textAlign: 'center' }}>
-        Utilisez les boutons ci-dessous pour vous déplacer dans le labyrinthe.
-      </div>
+        <div style={{ color: '#666', marginBottom: '8px', marginTop: '16px' }}>
+          Utilisez les boutons ci-dessous pour vous déplacer dans le labyrinthe.
+        </div>
       <div style={{ 
         marginTop: '20px',
         display: 'grid',
@@ -473,6 +488,7 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
         gridTemplateRows: 'repeat(3, 60px)',
         gap: '10px'
       }}>
+        {/* Ligne 1 : Flèche haut */}
         <div />
         <button
           style={buttonStyle}
@@ -497,6 +513,7 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
         </button>
         <div />
 
+        {/* Ligne 2 : Gauche et Droite */}
         <button
           style={buttonStyle}
           onMouseDown={(e) => {
@@ -541,6 +558,7 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
           {arrowSymbols[arrowMapping.right]}
         </button>
 
+        {/* Ligne 3 : Flèche bas */}
         <div />
         <button
           style={buttonStyle}

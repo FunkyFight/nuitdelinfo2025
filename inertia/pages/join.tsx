@@ -6,7 +6,7 @@ export default function Join(){
         alignItems: "center",
         justifyContent: "center"
     }}>
-        <MazeGenerator gridCols={8} gridRows={8} cellSize={48} />
+        <MazeGenerator gridCols={8} gridRows={8} cellSize={48} redirectUrl='/play' />
         </div>
 }
 /*
