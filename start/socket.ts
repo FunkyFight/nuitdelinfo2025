@@ -47,6 +47,12 @@ transmit.on('broadcast', ({ channel, payload }) => {
         changeId: data.changeId
       })
       break;
+
+    case "goodbye":
+      room = roomService.getRoom(data.room);
+      if(room == null) return;
+
+      roomService.destroyRoom(data.room)
   }
 })
 

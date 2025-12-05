@@ -1,5 +1,7 @@
 import { Subscription, Transmit } from '@adonisjs/transmit-client'
 import { RoomRole } from './room_user_type.js';
+import ClientWebsocketMessageSender from '#services/websocket/ClientWebsocketMessageSender';
+import WebsocketMessageFactory from '#services/websocket/messageTypes/WebsocketMessageFactory';
 
 export default class RoomUser
 {
@@ -18,6 +20,11 @@ export default class RoomUser
 
     this.transmitClient = new Transmit({
       baseUrl: origin,
+    })
+
+    this.transmitClient.on('disconnected', (ev) => {
+      if(role != RoomRole.OWNER) return;
+      ClientWebsocketMessageSender.sendMessageToServer(this.uid, this.room_id, WebsocketMessageFactory.getClientWebsocketMessage("goodbye")!, {})
     })
 
   }

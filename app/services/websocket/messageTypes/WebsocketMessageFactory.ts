@@ -12,6 +12,7 @@ import IWebsocketMessage from "./IWebsocketMessage.js";
 import IClientWebsocketMessage from "./IClientWebsocketMessage.js";
 import InformViewChangeWebsocketMessage from "./types/serverToClient/InformViewChangeWebsocketMessage.js";
 import InformViewChangeClientWebsocketMessage from "./types/clientToServer/InformViewChangeClientWebsocketMessage.js";
+import goodbye from "./types/clientToServer/goodbye.js";
 
 type WebsocketMessageConstructor = new () => IWebsocketMessage | IClientWebsocketMessage;
 
@@ -32,6 +33,7 @@ export default class WebsocketMessageFactory
     this.messages.set("inform_view_change", InformViewChangeWebsocketMessage)
 
     // Client to server
+    this.messages.set("goodbye", goodbye)
     this.messages.set("room_kick", RoomKickWebsocketMessage)
     this.messages.set("room_info_request", RoomInfoRequestWebsocketMessage)
     this.messages.set("inform_view_change_client", InformViewChangeClientWebsocketMessage)
