@@ -1,11 +1,9 @@
 import { Head } from '@inertiajs/react'
 import { useEffect, useState } from 'react'
-import { Transmit } from '@adonisjs/transmit-client'
 import ClientWebsocketMessageSender from '~/services/ClientWebsocketMessageSender'
-import RoomInfoRequestWebsocketMessage from '#services/websocket/messageTypes/types/clientToServer/RoomInfoRequestWebsocketMessage'
 import WebsocketMessageFactory from '#services/websocket/messageTypes/WebsocketMessageFactory'
 import RoomUser from '../../app/services/rooms/room_user'
-import { RoomRole } from '#services/rooms/room'
+import { RoomRole } from '#services/rooms/room_user_type'
 
 export default function Home() {
   const [socketState, setSocketState] = useState("disconnected")
@@ -18,7 +16,6 @@ export default function Home() {
     roomUser?.transmitSubscribe("client", `client/${roomUser.uid}`)
     .onMessage((message: any) => {
       if (message.type === 'on_message') {
-        console.log('Received message:', message)
       }
     })
 

@@ -1,9 +1,12 @@
+import InformViewChangeClientWebsocketMessage from "#services/websocket/messageTypes/types/clientToServer/InformViewChangeClientWebsocketMessage";
+import WebsocketMessageFactory from "#services/websocket/messageTypes/WebsocketMessageFactory";
 import { Transmit } from "@adonisjs/transmit-client";
 import { Head } from "@inertiajs/react"
 import { useEffect, useState } from "react";
 import QuestionBasePresentation from "~/components/QuestionBasePresentation";
 import RoomFooter from "~/components/roomfooter"
 import RoomLanding from "~/components/roomlanding"
+import ClientWebsocketMessageSender from "~/services/ClientWebsocketMessageSender";
 
 const input_styles: React.CSSProperties = {
   borderWidth: 2,
@@ -66,7 +69,6 @@ export default function Room() {
     }}, [])
 
     async function hostRoom(uid: string) {
-        console.log("Lancement host room")
         setSocketState('connecting...')
 
         try {
@@ -100,6 +102,9 @@ export default function Room() {
     return <>
         <Head title="Room" />
         <RoomLanding roomId={roomId}></RoomLanding>
+        <button onClick={() => {
+          ClientWebsocketMessageSender.sendMessageToServer(uid, roomId!, WebsocketMessageFactory.getClientWebsocketMessage("inform_view_change_client")!, {changedId: "slide5"})
+        }}>Test imposer vue</button>
     </>
     /*
     return <>
