@@ -5,7 +5,8 @@ import WebsocketMessage from "../../WebsocketMessage.js";
  * Ordonner au client de changer de vue
  *
  * data: {
- *  changeId: string
+ *  changeId: string,
+ *  showAnswer: boolean
  * }
  */
 export default class InformViewChangeWebsocketMessage extends ClientWebsocketMessage
