@@ -112,9 +112,9 @@ export default function Home() {
         <h1>Transmit Debug Page</h1>
 
         <div style={{ marginBottom: '20px' }}>
-          <p><strong>Client UID:</strong> {uid}</p>
+          <p><strong>Client UID:</strong> {roomUser?.uid}</p>
           <p><strong>Status:</strong> {socketState}</p>
-          {roomId && <p><strong>Room ID:</strong> {roomId}</p>}
+          {roomUser?.room_id && <p><strong>Room ID:</strong> {roomUser?.room_id}</p>}
         </div>
 
         <div style={{ marginBottom: '20px' }}>

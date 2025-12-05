@@ -10,11 +10,13 @@
 import router from '@adonisjs/core/services/router'
 import transmit from '@adonisjs/transmit/services/main'
 import { handleConnection } from '#start/socket'
+import PlaysController from '#controllers/plays_controller'
 
 router.on('/').renderInertia('home')
 router.on('/join').renderInertia('join')
 
 router.on('/debug').renderInertia('debug')
+router.get('/play', [PlaysController, 'play']) // Côté client
 
 // Transmit connection endpoint
 router.post('/connect', async ({ request, response }) => {
