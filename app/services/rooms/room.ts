@@ -113,5 +113,5 @@ export default class Room
 
 export enum RoomRole
 {
-  OWNER, PARTICIPANTS
+  NONE, OWNER, PARTICIPANTS
 }
