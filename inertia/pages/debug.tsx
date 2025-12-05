@@ -4,57 +4,26 @@ import { Transmit } from '@adonisjs/transmit-client'
 import ClientWebsocketMessageSender from '~/services/ClientWebsocketMessageSender'
 import RoomInfoRequestWebsocketMessage from '#services/websocket/messageTypes/types/clientToServer/RoomInfoRequestWebsocketMessage'
 import WebsocketMessageFactory from '#services/websocket/messageTypes/WebsocketMessageFactory'
+import RoomUser from '../../app/services/rooms/room_user'
+import { RoomRole } from '#services/rooms/room'
 
 export default function Home() {
   const [socketState, setSocketState] = useState("disconnected")
-  const [trsmt, setTransmit] = useState<Transmit | null>(null)
-  const [uid, setUid] = useState<string>('')
-  const [roomId, setRoomId] = useState<string>('')
-  const [serverSubscription, setServerSubscription] = useState<any>(null)
+  const [roomUser, setRoomUser] = useState<RoomUser>()
+
 
   useEffect(() => {
-    // Generate a unique ID for this client
-    const clientUid = `client_${Math.random().toString(36).substring(2, 15)}`
-    setUid(clientUid)
+    setRoomUser(new RoomUser(RoomRole.NONE, window))
 
-    // Initialize Transmit client
-    const transmitClient = new Transmit({
-      baseUrl: window.location.origin,
-    })
-
-    setTransmit(transmitClient)
-
-    // Subscribe to personal channel
-    const subscription = transmitClient.subscription(`client/${clientUid}`)
-    subscription.create()
-
-    // Subscribe to server channel for sending messages
-    const serverSub = transmitClient.subscription('server')
-    serverSub.create()
-    setServerSubscription(serverSub)
-
-    subscription.onMessage((message: any) => {
-      console.log('Received message:', message)
-
+    roomUser?.transmitSubscribe("client", `client/${roomUser.uid}`)
+    .onMessage((message: any) => {
       if (message.type === 'on_message') {
-        const data = message.data
-        console.log('Message data:', data)
-
-        if (data.message_type === 'room_created') {
-          setRoomId(data.created_room_id)
-          setSocketState('room_created')
-        } else if (data.message_type === 'room_joined') {
-          setSocketState('room_joined')
-        } else if (data.message_type === 'connection_failed') {
-          setSocketState('connection_failed')
-          console.error('Connection failed:', data.reason)
-        }
+        console.log('Received message:', message)
       }
     })
 
     return () => {
-      subscription.delete()
-      serverSub.delete()
+      roomUser?.getSubscription("client").delete()
     }
   }, [])
 
@@ -69,7 +38,7 @@ export default function Home() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          uid: uid,
+          uid: roomUser!.uid,
           role: 'host'
         })
       })
@@ -77,8 +46,10 @@ export default function Home() {
       const result = await response.json()
       console.log('Connection result:', result)
 
+      roomUser!.role = RoomRole.OWNER
+
       if (result.success) {
-        setRoomId(result.roomId)
+        roomUser!.room_id = result.roomId
         setSocketState('host_connected')
       } else {
         setSocketState('connection_failed')
@@ -101,7 +72,7 @@ export default function Home() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          uid: uid,
+          uid: roomUser!.uid,
           role: 'participant',
           target_room_id: targetRoomId
         })
@@ -111,7 +82,7 @@ export default function Home() {
       console.log('Connection result:', result)
 
       if (result.success) {
-        setRoomId(result.roomId)
+        roomUser!.room_id = result.roomId
         setSocketState('participant_connected')
       } else {
         setSocketState('connection_failed')
@@ -127,8 +98,8 @@ export default function Home() {
     console.log("Sending test message")
     // Send message to server using the client message sender
     ClientWebsocketMessageSender.sendMessageToServer(
-      uid,
-      roomId,
+      roomUser!.uid,
+      roomUser!.room_id,
       WebsocketMessageFactory.getClientWebsocketMessage("room_info_request")!, {}
     )
   }
