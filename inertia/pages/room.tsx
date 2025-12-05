@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import QuestionBasePresentation from "~/components/QuestionBasePresentation";
 import RoomFooter from "~/components/roomfooter"
 import RoomLanding from "~/components/roomlanding"
+import STLPresentation from "~/components/STLPresentation";
 
 const input_styles: React.CSSProperties = {
   borderWidth: 2,
@@ -18,6 +19,7 @@ const questions = [
     { id: "base", showAnswer: false },
     { id: "question1", showAnswer: false },
     { id: "question1", showAnswer: true },
+    { id: "stl1", showAnswer: false },
 ]
 
 interface Question {
@@ -133,6 +135,9 @@ export default function Room() {
         }
         {
             question.id == "question1" && (<QuestionBasePresentation question="Sample question?" image="https://upload.wikimedia.org/wikipedia/commons/2/2a/Croissant-Petr_Kratochvil.jpg" answers={["Answer 1", "Answer 2", "Answer 3", "Answer 4"]} answer={0} showAnswer={question.showAnswer}></QuestionBasePresentation>)
+        }
+        {
+            question.id == "stl1" && (<STLPresentation title="3D Model Example" stlFile="https://litter.catbox.moe/folv114g6x2wzpwo.stl" ></STLPresentation>)
         }
         { roomId && (
         <RoomFooter onNext={nextQuestion} onBack={previousQuestion} showNext={questionIndex < questions.length - 1} showBack={questionIndex > 0} />
