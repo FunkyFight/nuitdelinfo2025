@@ -1,7 +1,16 @@
-import { useEffect } from 'react';
-import {Cell, Wall, draw} from '../js/kahoot.js';
+import MazeGenerator from '~/components/Maze.js';
 
-export default function Join() {
+export default function Join(){
+    return <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+    }}>
+        <MazeGenerator gridCols={8} gridRows={8} cellSize={48} />
+        </div>
+}
+/*
+export function Join_old() {
     useEffect(() => {
         draw();
     }, []);
@@ -29,4 +38,4 @@ export default function Join() {
         </div>
         <p>here2</p>
     </>
-}
+}*/
