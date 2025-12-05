@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { router } from '@inertiajs/react';
+import '../css/maze.css';
 
 interface MazeGeneratorProps {
   gridCols?: number;
@@ -382,206 +383,86 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
 
   }, [playerPos, cellSize, wallThickness, pathColor, deadEndColor, textColor, playerColor]);
 
-  // Gestion du clavier physique (ne change pas les flèches)
-  /*useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      switch (e.key) {
-        case 'ArrowUp':
-        case 'z':
-        case 'w':
-          movePlayer('up', false);
-          e.preventDefault();
-          break;
-        case 'ArrowRight':
-        case 'd':
-          movePlayer('right', false);
-          e.preventDefault();
-          break;
-        case 'ArrowDown':
-        case 's':
-          movePlayer('down', false);
-          e.preventDefault();
-          break;
-        case 'ArrowLeft':
-        case 'q':
-        case 'a':
-          movePlayer('left', false);
-          e.preventDefault();
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [playerPos]);*/
 
   const remainingDigits = codeLength - password.length;
 
   // Mapping des directions vers les symboles de flèches
   const arrowSymbols: Record<Direction, string> = {
-    up: '↑',
-    down: '↓',
-    left: '←',
-    right: '→'
-  };
-
-  // Styles pour les boutons
-  const buttonStyle: React.CSSProperties = {
-    width: '60px',
-    height: '60px',
-    fontSize: '24px',
-    border: '2px solid #3366ff',
-    borderRadius: '8px',
-    backgroundColor: '#fff',
-    color: '#3366ff',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    userSelect: 'none',
-    transition: 'all 0.1s ease',
-  };
-
-  const buttonHoverStyle: React.CSSProperties = {
-    backgroundColor: '#3366ff',
-    color: '#fff',
-    transform: 'scale(0.95)',
+    up: '⬆️',
+    down: '⬇️',
+    left: '⬅️',
+    right: '➡️'
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <canvas 
-        ref={canvasRef} 
-        style={{ display: 'block' }} 
-        tabIndex={0}
-      />
-      
-      {/* Informations du code */}
-      <div style={{ marginTop: '20px', fontSize: '14px', textAlign: 'center' }}>
-        <div style={{ 
-          fontSize: '24px', 
-          fontWeight: 'bold', 
-          color: password.length === codeLength ? '#00cc00' : '#333',
-          fontFamily: 'monospace',
-          letterSpacing: '4px'
-        }}>
-          Code : {password || '________'.slice(0, codeLength).split('').join(' ')}
-        </div>
-        <div style={{ color: '#999', fontSize: '12px', marginTop: '4px' }}>
-          {remainingDigits > 0 
-            ? `${remainingDigits} chiffre${remainingDigits > 1 ? 's' : ''} restant${remainingDigits > 1 ? 's' : ''} • -1 = suppression`
-            : '✓ Code complet ! Redirection...'}
-        </div>
-      </div>
+    <div className="maze-wrapper">
+      {/* Main content: Canvas + Controls */}
+      <div className="maze-content">
+        {/* Canvas */}
+        <canvas 
+          ref={canvasRef} 
+          className="maze-canvas"
+          tabIndex={0}
+        />
 
-      {/* Clavier virtuel avec flèches dynamiques */}
-        <div style={{ color: '#666', marginBottom: '8px', marginTop: '16px' }}>
-          Utilisez les boutons ci-dessous pour vous déplacer dans le labyrinthe.
+        {/* Code display (left on desktop, top on mobile) */}
+        <div className="maze-code-section">
+          <div className={`maze-code-display ${password.length === codeLength ? 'complete' : ''}`}>
+            Code : {password || '________'.slice(0, codeLength).split('').join(' ')}
+          </div>
+          <div className="maze-code-hint">
+            {remainingDigits > 0 
+              ? `${remainingDigits} chiffre${remainingDigits > 1 ? 's' : ''} restant${remainingDigits > 1 ? 's' : ''} • -1 = suppression`
+              : '✓ Code complet ! Redirection...'}
+          </div>
         </div>
-      <div style={{ 
-        marginTop: '20px',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 60px)',
-        gridTemplateRows: 'repeat(3, 60px)',
-        gap: '10px'
-      }}>
-        {/* Ligne 1 : Flèche haut */}
-        <div />
-        <button
-          style={buttonStyle}
-          onMouseDown={(e) => {
-            e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor!;
-            e.currentTarget.style.color = buttonHoverStyle.color!;
-            e.currentTarget.style.transform = buttonHoverStyle.transform!;
-          }}
-          onMouseUp={(e) => {
-            e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor!;
-            e.currentTarget.style.color = buttonStyle.color!;
-            e.currentTarget.style.transform = 'scale(1)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor!;
-            e.currentTarget.style.color = buttonStyle.color!;
-            e.currentTarget.style.transform = 'scale(1)';
-          }}
-          onClick={() => movePlayer(arrowMapping.top, true)}
-        >
-          {arrowSymbols[arrowMapping.top]}
-        </button>
-        <div />
 
-        {/* Ligne 2 : Gauche et Droite */}
-        <button
-          style={buttonStyle}
-          onMouseDown={(e) => {
-            e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor!;
-            e.currentTarget.style.color = buttonHoverStyle.color!;
-            e.currentTarget.style.transform = buttonHoverStyle.transform!;
-          }}
-          onMouseUp={(e) => {
-            e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor!;
-            e.currentTarget.style.color = buttonStyle.color!;
-            e.currentTarget.style.transform = 'scale(1)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor!;
-            e.currentTarget.style.color = buttonStyle.color!;
-            e.currentTarget.style.transform = 'scale(1)';
-          }}
-          onClick={() => movePlayer(arrowMapping.left, true)}
-        >
-          {arrowSymbols[arrowMapping.left]}
-        </button>
-        <div />
-        <button
-          style={buttonStyle}
-          onMouseDown={(e) => {
-            e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor!;
-            e.currentTarget.style.color = buttonHoverStyle.color!;
-            e.currentTarget.style.transform = buttonHoverStyle.transform!;
-          }}
-          onMouseUp={(e) => {
-            e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor!;
-            e.currentTarget.style.color = buttonStyle.color!;
-            e.currentTarget.style.transform = 'scale(1)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor!;
-            e.currentTarget.style.color = buttonStyle.color!;
-            e.currentTarget.style.transform = 'scale(1)';
-          }}
-          onClick={() => movePlayer(arrowMapping.right, true)}
-        >
-          {arrowSymbols[arrowMapping.right]}
-        </button>
+        {/* Arrow controls (right on desktop, bottom on mobile) */}
+        <div className="maze-controls">
+          <div className="maze-instructions">
+            Utilisez les boutons ci-dessous pour vous déplacer dans le labyrinthe.
+          </div>
+          <div className="maze-button-grid">
+            {/* Row 1: Top arrow */}
+            <div />
+            <button
+              className="maze-arrow-button"
+              onClick={() => movePlayer(arrowMapping.top, true)}
+              title="Haut"
+            >
+              {arrowSymbols[arrowMapping.top]}
+            </button>
+            <div />
 
-        {/* Ligne 3 : Flèche bas */}
-        <div />
-        <button
-          style={buttonStyle}
-          onMouseDown={(e) => {
-            e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor!;
-            e.currentTarget.style.color = buttonHoverStyle.color!;
-            e.currentTarget.style.transform = buttonHoverStyle.transform!;
-          }}
-          onMouseUp={(e) => {
-            e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor!;
-            e.currentTarget.style.color = buttonStyle.color!;
-            e.currentTarget.style.transform = 'scale(1)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor!;
-            e.currentTarget.style.color = buttonStyle.color!;
-            e.currentTarget.style.transform = 'scale(1)';
-          }}
-          onClick={() => movePlayer(arrowMapping.bottom, true)}
-        >
-          {arrowSymbols[arrowMapping.bottom]}
-        </button>
-        <div />
+            {/* Row 2: Left and Right */}
+            <button
+              className="maze-arrow-button"
+              onClick={() => movePlayer(arrowMapping.left, true)}
+              title="Gauche"
+            >
+              {arrowSymbols[arrowMapping.left]}
+            </button>
+            <div />
+            <button
+              className="maze-arrow-button"
+              onClick={() => movePlayer(arrowMapping.right, true)}
+              title="Droite"
+            >
+              {arrowSymbols[arrowMapping.right]}
+            </button>
+
+            {/* Row 3: Bottom arrow */}
+            <div />
+            <button
+              className="maze-arrow-button"
+              onClick={() => movePlayer(arrowMapping.bottom, true)}
+              title="Bas"
+            >
+              {arrowSymbols[arrowMapping.bottom]}
+            </button>
+            <div />
+          </div>
+        </div>
       </div>
     </div>
   );
