@@ -15,7 +15,7 @@ import PlaysController from '#controllers/plays_controller'
 router.on('/').renderInertia('home')
 router.on('/join').renderInertia('join')
 router.on('/room').renderInertia('room')
-
+router.on('/mentions').renderInertia('mentions')
 router.on('/debug').renderInertia('debug')
 router.get('/play', [PlaysController, 'play']) // Côté client
 
