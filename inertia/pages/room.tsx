@@ -1,3 +1,5 @@
+import RoomUser from "#services/rooms/room_user";
+import { RoomRole } from "#services/rooms/room_user_type";
 import InformViewChangeClientWebsocketMessage from "#services/websocket/messageTypes/types/clientToServer/InformViewChangeClientWebsocketMessage";
 import WebsocketMessageFactory from "#services/websocket/messageTypes/WebsocketMessageFactory";
 import { Transmit } from "@adonisjs/transmit-client";
@@ -32,32 +34,23 @@ interface Question {
 
 export default function Room() {
 
-    const [socketState, setSocketState] = useState("disconnected")
-    const [transmit, setTransmit] = useState<Transmit | null>(null)
-    const [uid, setUid] = useState<string>('')
+    const [roomUser, setRoomUser] = useState<RoomUser | null>(null)
     const [roomId, setRoomId] = useState<string|null>(null)
     const [question, setQuestion] = useState<Question>(questions[0])
     const [questionIndex, setQuestionIndex] = useState<number>(0)
-    const [showAnswer, setShowAnswer] = useState<boolean>(false)
 
     
 
     useEffect(() => {
-        // Generate a unique ID for this client
-        const clientUid = `client_${Math.random().toString(36).substring(2, 15)}`
-        setUid(clientUid)
-
-        // Initialize Transmit client
-        const transmitClient = new Transmit({
-            baseUrl: window.location.origin,
-        })
-        setTransmit(transmitClient)
+        
 
 
     // Subscribe to personal channel
-        const subscription = transmitClient.subscription(`client/${clientUid}`)
+        const roomUser = new RoomUser(RoomRole.OWNER, window.location.origin)
+        setRoomUser(roomUser)
 
-        subscription.create()
+        const clientUid = roomUser.uid
+        const subscription = roomUser.transmitSubscribe("client", `client/${clientUid}`)
         subscription.onMessage((message: any) => {
             console.log('Received message:', message)
 
@@ -66,13 +59,10 @@ export default function Room() {
                 switch (data.message_type) {
                     case 'room_created':
                         setRoomId(data.created_room_id)
-                        setSocketState('room_created')
                         break
                     case 'room_joined':
-                        setSocketState('room_joined')
                         break
                     case 'connection_failed':
-                        setSocketState('connection_failed')
                         console.error('Connection failed:', data.reason)
                         break
                 }
@@ -85,7 +75,6 @@ export default function Room() {
     }}, [])
 
     async function hostRoom(uid: string) {
-        setSocketState('connecting...')
 
         try {
         const response = await fetch('/connect', {
@@ -104,14 +93,11 @@ export default function Room() {
 
         if (result.success) {
             setRoomId(result.roomId)
-            setSocketState('host_connected')
         } else {
-            setSocketState('connection_failed')
             console.error('Failed to host room:', result.error)
         }
         } catch (error) {
         console.error('Error hosting room:', error)
-        setSocketState('error')
         }
     }
 
