@@ -33,7 +33,7 @@ export default function Room() {
             baseUrl: window.location.origin,
         })
         setTransmit(transmitClient)
-        
+
 
     // Subscribe to personal channel
         const subscription = transmitClient.subscription(`client/${clientUid}`)
@@ -41,7 +41,7 @@ export default function Room() {
         subscription.create()
         subscription.onMessage((message: any) => {
             console.log('Received message:', message)
-            
+
             if (message.type === 'on_message') {
                 const data = message.data
                 switch (data.message_type) {
@@ -97,18 +97,16 @@ export default function Room() {
         }
     }
 
-    
+    return <>
+        <Head title="Room" />
+        <RoomLanding roomId={roomId}></RoomLanding>
+    </>
+    /*
     return <>
         <Head title="Room" />
         <QuestionBasePresentation question="Sample question?" image="https://upload.wikimedia.org/wikipedia/commons/2/2a/Croissant-Petr_Kratochvil.jpg" answers={["Answer 1", "Answer 2", "Answer 3", "Answer 4"]} answer={0} showAnswer={false}></QuestionBasePresentation>
         <RoomFooter onNext={() => {}} />
-    
-    
-    
-    
-    
-    
-    
     </>
+    */
 }
 

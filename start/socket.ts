@@ -2,9 +2,10 @@ import transmit from '@adonisjs/transmit/services/main'
 import { RoomService } from "#services/rooms/room_service"
 import WebsocketMessageFactory from '#services/websocket/messageTypes/WebsocketMessageFactory'
 import { RoomRole } from '#services/rooms/room'
+import app from '@adonisjs/core/services/app'
 
 // Initialize room service
-const roomService = new RoomService()
+const roomService = await app.container.make(RoomService)
 
 // Store client connections with their metadata
 const clientConnections = new Map<string, {
@@ -68,6 +69,7 @@ export function handleConnection(uid: string, data: { role: 'host' | 'participan
   switch (data.role) {
     case 'host': {
       // Utilisateur veut host
+      console.log("Creating new room with id: " + uid)
       const created_room = roomService.createNewRoom(uid)
 
       // Store client connection info
