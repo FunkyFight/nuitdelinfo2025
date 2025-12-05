@@ -31,7 +31,7 @@ const MazeGenerator: React.FC<MazeGeneratorProps> = ({
   textColor = '#000',
   playerColor = '#3366ff',
   codeLength = 8,
-  redirectUrl = '/success',
+  redirectUrl = '/play',
   onCodeComplete
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
