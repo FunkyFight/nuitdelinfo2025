@@ -76,4 +76,11 @@ const possibleAnswers = [
 
 const goodAnswers = [1, 2, 1, 1, 1, 1, 1, 1, 2, 1]
 
-export { titleQuestions, possibleAnswers, goodAnswers }
+const questionsFile = [
+    { id: "base", showAnswer: false },
+    { id: "question1", showAnswer: false },
+    { id: "question1", showAnswer: true },
+    { id: "stl1", showAnswer: false }
+]
+
+export { titleQuestions, possibleAnswers, goodAnswers, questionsFile }

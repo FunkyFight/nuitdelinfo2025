@@ -10,6 +10,7 @@ import RoomFooter from "~/components/roomfooter"
 import RoomLanding from "~/components/roomlanding"
 import STLPresentation from "~/components/STLPresentation";
 import ClientWebsocketMessageSender from "~/services/ClientWebsocketMessageSender";
+import {questionsFile} from "#services/questions"
 
 const input_styles: React.CSSProperties = {
   borderWidth: 2,
@@ -20,12 +21,7 @@ const input_styles: React.CSSProperties = {
   maxWidth: "350px",
 }
 
-const questions = [
-    { id: "base", showAnswer: false },
-    { id: "question1", showAnswer: false },
-    { id: "question1", showAnswer: true },
-    { id: "stl1", showAnswer: false }
-]
+
 
 interface Question {
     id: string;
@@ -36,13 +32,13 @@ export default function Room() {
 
     const [roomUser, setRoomUser] = useState<RoomUser | null>(null)
     const [roomId, setRoomId] = useState<string|null>(null)
-    const [question, setQuestion] = useState<Question>(questions[0])
+    const [question, setQuestion] = useState<Question>(questionsFile[0])
     const [questionIndex, setQuestionIndex] = useState<number>(0)
 
-    
+
 
     useEffect(() => {
-        
+
 
 
     // Subscribe to personal channel
@@ -103,16 +99,19 @@ export default function Room() {
 
     async function nextQuestion() {
         const nextIndex = questionIndex + 1
-        if (nextIndex < questions.length) {
+        if (nextIndex < questionsFile.length) {
             setQuestionIndex(nextIndex)
-            setQuestion(questions[nextIndex])
+            setQuestion(questionsFile[nextIndex])
+
+            ClientWebsocketMessageSender.sendMessageToServer(roomUser!.uid, roomUser!.room_id, WebsocketMessageFactory.getClientWebsocketMessage("inform_view_change_client")!, {changeId: question.id})
         }
     }
     async function previousQuestion() {
         const prevIndex = questionIndex - 1
         if (prevIndex >= 0) {
             setQuestionIndex(prevIndex)
-            setQuestion(questions[prevIndex])
+            setQuestion(questionsFile[prevIndex])
+            ClientWebsocketMessageSender.sendMessageToServer(roomUser!.uid, roomUser!.room_id, WebsocketMessageFactory.getClientWebsocketMessage("inform_view_change_client")!, {changeId: question.id})
         }
     }
 
@@ -128,16 +127,16 @@ export default function Room() {
             question.id == "stl1" && (<STLPresentation title="3D Model Example" stlFile="https://litter.catbox.moe/folv114g6x2wzpwo.stl" ></STLPresentation>)
         }
         { roomId && (
-        <RoomFooter onNext={nextQuestion} onBack={previousQuestion} showNext={questionIndex < questions.length - 1} showBack={questionIndex > 0} />
+        <RoomFooter onNext={nextQuestion} onBack={previousQuestion} showNext={questionIndex < questionsFile.length - 1} showBack={questionIndex > 0} />
     )
         }
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     </>
-    
+
 }
 

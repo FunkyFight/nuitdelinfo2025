@@ -1,5 +1,4 @@
 import ClientWebsocketMessage from "../../ClientWebsocketMessage.js";
-import WebsocketMessage from "../../WebsocketMessage.js";
 
 /**
  * Demander au serveur d'informer le changement de la vue

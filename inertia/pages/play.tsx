@@ -2,6 +2,7 @@ import RoomUser from "#services/rooms/room_user";
 import { RoomRole } from "#services/rooms/room_user_type";
 import { usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react"
+import QuestionBasePresentationParticipant from "~/components/QuestionBasePresentationParticipant";
 
 interface PageProps {
   room_id: string | number,
@@ -12,6 +13,9 @@ export default function Home() {
   let [debug, setDebug] = useState<string>("Hi!");
   const { room_id } = usePage<PageProps>().props
   let [roomuser, setRoomUser] = useState<RoomUser>();
+
+  let [selection, setSelection] = useState<number | null>();
+  let [lastChangeId, setLastChangeId] = useState<string>();
 
   useEffect(() => {
     const newRoomUser = initRoomUser(room_id as string);
@@ -27,7 +31,12 @@ export default function Home() {
 
             switch(message_type) {
               case "inform_view_change":
-                setDebug("VIEW CHANGE !!!")
+                let changeId = message.changeId
+
+                if(lastChangeId != changeId)
+                {
+                  setSelection(null)
+                }
                 break;
             }
           })
@@ -36,7 +45,7 @@ export default function Home() {
 
   return (
     <>
-      <p>{room_id} & {debug}</p>
+      <QuestionBasePresentationParticipant question={'Lorem ipsum lorem ipsum'} answers={["lorem", "ipsum", "dolor", "amet"]} answer={2} showAnswer={true} selectedAnswer={selection!} onSelectAnswer={(i) => setSelection(i)}></QuestionBasePresentationParticipant>
     </>
   )
 }
