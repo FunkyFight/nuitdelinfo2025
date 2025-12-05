@@ -76,11 +76,30 @@ const possibleAnswers = [
 
 const goodAnswers = [1, 2, 1, 1, 1, 1, 1, 1, 2, 1]
 
+
 const questionsFile = [
-    { id: "base", showAnswer: false },
-    { id: "question1", showAnswer: false },
-    { id: "question1", showAnswer: true },
-    { id: "stl1", showAnswer: false }
+  { id: "base", showAnswer: false },
+  { id: "question1", showAnswer: false },
+  { id: "question1", showAnswer: true },
+  { id: "question2", showAnswer: false },
+  { id: "question2", showAnswer: true },
+  { id: "question3", showAnswer: false },
+  { id: "question3", showAnswer: true },
+  { id: "question4", showAnswer: false },
+  { id: "question4", showAnswer: true },
+  { id: "question5", showAnswer: false },
+  { id: "question5", showAnswer: true },
+  { id: "question6", showAnswer: false },
+  { id: "question6", showAnswer: true },
+  { id: "question7", showAnswer: false },
+  { id: "question7", showAnswer: true },
+  { id: "question8", showAnswer: false },
+  { id: "question8", showAnswer: true },
+  { id: "question9", showAnswer: false },
+  { id: "question9", showAnswer: true },
+  { id: "question10", showAnswer: false },
+  { id: "question10", showAnswer: true },
+  { id: "stl1", showAnswer: false },
 ]
 
 export { titleQuestions, possibleAnswers, goodAnswers, questionsFile }

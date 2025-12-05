@@ -10,7 +10,7 @@ import RoomFooter from "~/components/roomfooter"
 import RoomLanding from "~/components/roomlanding"
 import STLPresentation from "~/components/STLPresentation";
 import ClientWebsocketMessageSender from "~/services/ClientWebsocketMessageSender";
-import {questionsFile} from "#services/questions"
+import { titleQuestions, possibleAnswers, goodAnswers, questionsFile } from '#services/questions'
 
 const input_styles: React.CSSProperties = {
   borderWidth: 2,
@@ -20,8 +20,6 @@ const input_styles: React.CSSProperties = {
   width: "100%",
   maxWidth: "350px",
 }
-
-
 
 interface Question {
     id: string;
@@ -103,7 +101,8 @@ export default function Room() {
             setQuestionIndex(nextIndex)
             setQuestion(questionsFile[nextIndex])
 
-            ClientWebsocketMessageSender.sendMessageToServer(roomUser!.uid, roomUser!.room_id, WebsocketMessageFactory.getClientWebsocketMessage("inform_view_change_client")!, {changeId: question.id})
+            ClientWebsocketMessageSender.sendMessageToServer(roomUser!.uid, roomUser!.room_id, WebsocketMessageFactory.getClientWebsocketMessage("inform_view_change_client")!, {changeId: question.id, showAnswer: question.showAnswer})
+            
         }
     }
     async function previousQuestion() {
@@ -111,7 +110,9 @@ export default function Room() {
         if (prevIndex >= 0) {
             setQuestionIndex(prevIndex)
             setQuestion(questionsFile[prevIndex])
-            ClientWebsocketMessageSender.sendMessageToServer(roomUser!.uid, roomUser!.room_id, WebsocketMessageFactory.getClientWebsocketMessage("inform_view_change_client")!, {changeId: question.id})
+
+            ClientWebsocketMessageSender.sendMessageToServer(roomUser!.uid, roomUser!.room_id, WebsocketMessageFactory.getClientWebsocketMessage("inform_view_change_client")!, {changeId: question.id, showAnswer: question.showAnswer})
+            
         }
     }
 
@@ -121,21 +122,48 @@ export default function Room() {
             question.id == "base" && (<RoomLanding roomId={roomId} />)
         }
         {
-            question.id == "question1" && (<QuestionBasePresentation question="Sample question?" image="https://upload.wikimedia.org/wikipedia/commons/2/2a/Croissant-Petr_Kratochvil.jpg" answers={["Answer 1", "Answer 2", "Answer 3", "Answer 4"]} answer={0} showAnswer={question.showAnswer}></QuestionBasePresentation>)
+            question.id == "question1" && (<QuestionBasePresentation question={titleQuestions[0]} answers={possibleAnswers[0] as [string, string, string, string]} answer={goodAnswers[0] as 0 | 1 | 2 | 3} showAnswer={question.showAnswer}></QuestionBasePresentation>)
         }
         {
-            question.id == "stl1" && (<STLPresentation title="3D Model Example" stlFile="https://litter.catbox.moe/folv114g6x2wzpwo.stl" ></STLPresentation>)
+            question.id == "question2" && (<QuestionBasePresentation question={titleQuestions[1]} answers={possibleAnswers[1] as [string, string, string, string]} answer={goodAnswers[1] as 0 | 1 | 2 | 3} showAnswer={question.showAnswer}></QuestionBasePresentation>)
+        }
+        {
+            question.id == "question3" && (<QuestionBasePresentation question={titleQuestions[2]} answers={possibleAnswers[2] as [string, string, string, string]} answer={goodAnswers[2] as 0 | 1 | 2 | 3} showAnswer={question.showAnswer}></QuestionBasePresentation>)
+        }
+        {
+            question.id == "question4" && (<QuestionBasePresentation question={titleQuestions[3]} answers={possibleAnswers[3] as [string, string, string, string]} answer={goodAnswers[3] as 0 | 1 | 2 | 3} showAnswer={question.showAnswer}></QuestionBasePresentation>)
+        }
+        {
+            question.id == "question5" && (<QuestionBasePresentation question={titleQuestions[4]} answers={possibleAnswers[4] as [string, string, string, string]} answer={goodAnswers[4] as 0 | 1 | 2 | 3} showAnswer={question.showAnswer}></QuestionBasePresentation>)
+        }
+        {
+            question.id == "question6" && (<QuestionBasePresentation question={titleQuestions[5]} answers={possibleAnswers[5] as [string, string, string, string]} answer={goodAnswers[5] as 0 | 1 | 2 | 3} showAnswer={question.showAnswer}></QuestionBasePresentation>)
+        }
+        {
+            question.id == "question7" && (<QuestionBasePresentation question={titleQuestions[6]} answers={possibleAnswers[6] as [string, string, string, string]} answer={goodAnswers[6] as 0 | 1 | 2 | 3} showAnswer={question.showAnswer}></QuestionBasePresentation>)
+        }
+        {
+            question.id == "question8" && (<QuestionBasePresentation question={titleQuestions[7]} answers={possibleAnswers[7] as [string, string, string, string]} answer={goodAnswers[7] as 0 | 1 | 2 | 3} showAnswer={question.showAnswer}></QuestionBasePresentation>)
+        }
+        {
+            question.id == "question9" && (<QuestionBasePresentation question={titleQuestions[8]} answers={possibleAnswers[8] as [string, string, string, string]} answer={goodAnswers[8] as 0 | 1 | 2 | 3} showAnswer={question.showAnswer}></QuestionBasePresentation>)
+        }
+        {
+            question.id == "question10" && (<QuestionBasePresentation question={titleQuestions[9]} answers={possibleAnswers[9] as [string, string, string, string]} answer={goodAnswers[9] as 0 | 1 | 2 | 3} showAnswer={question.showAnswer}></QuestionBasePresentation>)
+        }
+        {
+            question.id == "stl1" && (<STLPresentation title="Vous avez atteint la fin du quiz ! Voici un ordinateur portable miniature en 3D ! Vous pouvez glisser-déposer d'autres fichiers STL si vous le souhaitez." stlFile="https://files.catbox.moe/95zkyh.stl" ></STLPresentation>)
         }
         { roomId && (
         <RoomFooter onNext={nextQuestion} onBack={previousQuestion} showNext={questionIndex < questionsFile.length - 1} showBack={questionIndex > 0} />
     )
         }
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
     </>
 
 }

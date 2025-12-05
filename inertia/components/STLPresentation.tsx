@@ -241,6 +241,12 @@ export default function STLPresentation({ title, stlFile }: STLPresentationProps
         <h2 style={styles.titleText}>{title}</h2>
       </div>
       <div ref={containerRef} style={styles.sceneContainer}>
+        <div style={styles.controlsBox}>
+          <div style={styles.controlsTitle}>Contrôles</div>
+          <div style={styles.controlRow}>🖱️ Clic gauche + glisser : Rotation</div>
+          <div style={styles.controlRow}>🖱️ Molette : Zoom</div>
+          <div style={styles.controlRow}>🖱️ Clic droit + glisser : Déplacement</div>
+        </div>
         {dimensions && (
           <div style={styles.dimensionsBox}>
             <div style={styles.dimensionsTitle}>Dimensions</div>
@@ -288,9 +294,32 @@ const styles = {
     overflow: 'hidden',
     position: 'relative' as const,
   },
+  controlsBox: {
+    position: 'absolute' as const,
+    bottom: '5rem',
+    left: '1rem',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    border: '2px solid #e5e7eb',
+    borderRadius: '0.5rem',
+    padding: '0.75rem 1rem',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+    fontSize: '0.875rem',
+    zIndex: 10,
+  },
+  controlsTitle: {
+    fontWeight: 600,
+    marginBottom: '0.5rem',
+    color: '#1f2937',
+    borderBottom: '1px solid #e5e7eb',
+    paddingBottom: '0.25rem',
+  },
+  controlRow: {
+    color: '#374151',
+    marginTop: '0.25rem',
+  },
   dimensionsBox: {
     position: 'absolute' as const,
-    bottom: '1rem',
+    bottom: '5rem',
     right: '1rem',
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     border: '2px solid #e5e7eb',
