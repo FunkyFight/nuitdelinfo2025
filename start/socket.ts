@@ -1,8 +1,8 @@
 import transmit from '@adonisjs/transmit/services/main'
 import { RoomService } from "#services/rooms/room_service"
 import WebsocketMessageFactory from '#services/websocket/messageTypes/WebsocketMessageFactory'
-import { RoomRole } from '#services/rooms/room'
 import app from '@adonisjs/core/services/app'
+import { RoomRole } from '#services/rooms/room_user_type'
 
 // Initialize room service
 const roomService = await app.container.make(RoomService)
@@ -35,7 +35,6 @@ transmit.on('unsubscribe', ({ uid, channel }) => {
 transmit.on('broadcast', ({ channel, payload }) => {
   if(payload == null) return;
 
-  console.log("broadcast", channel);
   const data = payload as Record<string, any>;
 
   switch(data.message_type)
@@ -69,7 +68,6 @@ export function handleConnection(uid: string, data: { role: 'host' | 'participan
   switch (data.role) {
     case 'host': {
       // Utilisateur veut host
-      console.log("Creating new room with id: " + uid)
       const created_room = roomService.createNewRoom(uid)
 
       // Store client connection info
@@ -92,6 +90,7 @@ export function handleConnection(uid: string, data: { role: 'host' | 'participan
 
     case 'participant': {
       // Utilisateur veut participer dans une room
+      console.log("Enregistrement en tant que")
       if (data.target_room_id == null) {
         transmit.broadcast(`client/${uid}`, {
           type: 'on_message',
@@ -116,6 +115,7 @@ export function handleConnection(uid: string, data: { role: 'host' | 'participan
       }
 
       target_room.addParticipant(uid)
+      console.log("addParticipant")
 
       // Store client connection info
       clientConnections.set(uid, {

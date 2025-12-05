@@ -1,6 +1,7 @@
 import WebsocketMessage from '#services/websocket/messageTypes/WebsocketMessage';
 import WebsocketMessageFactory from '#services/websocket/messageTypes/WebsocketMessageFactory';
 import transmit from '@adonisjs/transmit/services/main'
+import { RoomRole } from './room_user_type.js';
 
 export default class Room
 {
@@ -19,6 +20,7 @@ export default class Room
   addParticipant(uid: string)
   {
     this.participants.push(uid);
+    console.log("Added new participant: " + uid)
   }
 
   removeParticipant(uid: string)
@@ -72,6 +74,7 @@ export default class Room
   {
     if(this.room_owner == null) return;
 
+
     switch(destination)
     {
       case RoomRole.OWNER:
@@ -82,12 +85,13 @@ export default class Room
         break;
 
       case RoomRole.PARTICIPANTS:
+          console.log("emitTo : users : " + this.participants)
+
         for(const uid of this.participants)
         {
-          transmit.broadcast(`client/${uid}`, {
-            type: "on_message",
-            data: message.build(additionnal_data)
-          })
+          transmit.broadcast(`client/${uid}`, message.build(additionnal_data))
+          console.log("emitTo : envoie au user " + uid)
+
         }
         break;
     }
@@ -109,9 +113,4 @@ export default class Room
     }
   }
 
-}
-
-export enum RoomRole
-{
-  NONE, OWNER, PARTICIPANTS
 }
